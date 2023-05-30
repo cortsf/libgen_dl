@@ -9,7 +9,7 @@ Usage
 
 ```
 mkdir "hello"
-cd haskell
+cd hello
 libgen_dl.sh "hello world"
 ```
 
