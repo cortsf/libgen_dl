@@ -7,6 +7,8 @@ echo -e "#### See ./html/log after running. Manually inspect temp files under ./
 echo -e "#### Optionally comment last line to use uget or any other dl manager to download link list (./html/file_link_list.txt)"
 echo -e "###########################################################\n\n"
 
+if [ "$1" == "" ]; then exit; fi
+
 search=$(echo "$1" | sed 's/\ /%20/g')
 
 ######### 0. Create directories and log search keyword/s
