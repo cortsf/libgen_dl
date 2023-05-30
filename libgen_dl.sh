@@ -33,7 +33,7 @@ for page_file in ./html/pages/*; do
 done
 
 ######## 3. Download every "get" page and store it under `html/get/`
-aria2c -d "html/get" -i ./html/get_page_link_list.txt -j3 -l ./html/get_page_log
+aria2c -j3 -d "html/get" -i ./html/get_page_link_list.txt -l ./html/get_page_log
 
 
 ######## 4. For each individual "get" page collect the direct (document) link into `html/file_link_list.txt`.
@@ -47,6 +47,6 @@ for file in ./html/get/*; do
 done
 
 # Comment this line if you only want to collect links (For example to use another dl manager such as uget)
-aria2c -i ./html/file_link_list.txt -j3 -l ./html/file_download_log
+aria2c -j3 -i ./html/file_link_list.txt -l ./html/file_download_log
 
 echo "======================================== FINISHED DOWNLOADING" >> "html/log"
