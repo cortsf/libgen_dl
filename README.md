@@ -1,7 +1,7 @@
 ## Dependecies
 
-- pup
-- aria2
+- [pup](https://github.com/ericchiang/pup)
+- [aria2](https://github.com/aria2/aria2)
 
 ## Usage
 
