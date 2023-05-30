@@ -1,4 +1,10 @@
-USAGE
+Dependecies
+===========
+
+- pup
+- aria2
+
+Usage
 =====
 
 ```
@@ -7,8 +13,7 @@ cd haskell
 libgen_dl.sh "hello world"
 ```
 
-TODO
+Todo
 ====
 
 Fine tune url's/searchs. I don't need it but could be done.
-
