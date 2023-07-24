@@ -2,7 +2,7 @@
 
 echo -e "\n\n###########################################################"
 echo -e "#### Dependencies: pup, aria2c"
-echo -e "#### Usage: 'libgen_dl.sh <search_keywords>'."
+echo -e "#### Usage: 'mkdir <something> && cd <something> && libgen_dl.sh <search_keywords>'."
 echo -e "#### See ./html/log after running. Manually inspect temp files under ./html if needed."
 echo -e "#### Optionally comment last line to use uget or any other dl manager to download link list (./html/file_link_list.txt)"
 echo -e "###########################################################\n\n"
