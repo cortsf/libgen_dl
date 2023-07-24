@@ -19,8 +19,8 @@ echo "======================================== SEARCH KEYWORD: $1" >> "html/log"
 ######## 1. Download all "search" pages.
 search=$(echo "$1" | sed 's/\ /%20/g')
 aria2c -d "html/pages" "https://libgen.rs/search.php?&req=$search&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=1"
-crawl_page_count="$(cat "html/pages/search.php" | pup 'script:nth-of-type(2)' | sed '4q;d' | sed 's/,.*//' | sed 's/\ *//')"
-if [ "$crawl_page_count" == "" ]; then page_count=1; else page_count="$crawl_page_count"; fi
+page_count="$(cat "html/pages/search.php" | pup 'script:nth-of-type(2)' | sed '4q;d' | sed 's/,.*//' | sed 's/\ *//')"
+page_count=${page_count:-1}
 echo "Number of pages: $page_count" >> "html/log"
 for i in $(seq 2 "$page_count"); do
     aria2c -d "./html/pages" "http://libgen.rs/search.php?&req=$search&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=$i"
