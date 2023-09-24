@@ -29,7 +29,7 @@ page_count="$(cat "libgen_dl/pages/search.php" | pup 'script:nth-of-type(2)' | s
 page_count=${page_count:-1}
 echo "$(date +"%Y-%m-%d %T" ) Number of pages ($results items per page): $page_count" >> "libgen_dl/log"
 for i in $(seq 2 "$page_count"); do
-    aria2c -d "./libgen_dl/pages" "$(mkSearchLink "$1" $i)"
+    aria2c -d "./libgen_dl/pages" "$(mkSearchLink "$1" "$i")"
 done
 
 ######## 2. For each "search" page, collect every individual "get" link into `libgen_dl/get_page_link_list.txt`.
