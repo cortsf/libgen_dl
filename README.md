@@ -14,6 +14,4 @@ libgen_dl.sh "hello world"
 ## Alternatives
 - libgen-cli
 - libgen-downloader
-
-## Todo
-Fine tune url's/searchs. I don't need it but could be done.
+- Many (mostly python?) others on gh.
