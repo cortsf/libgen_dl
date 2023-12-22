@@ -1,3 +1,8 @@
+## Description
+Batch download files from libgen.
+
+**NOTE:** Changes on libgen are commonplace and often cause libgen_dl to fail. If this happens please open an issue and I'll try to fix it.
+
 ## Dependecies
 
 - [pup](https://github.com/ericchiang/pup)

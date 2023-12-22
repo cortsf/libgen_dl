@@ -46,10 +46,7 @@ aria2c -j3 -d "libgen_dl/get" -i ./libgen_dl/get_page_link_list.txt -l ./libgen_
 ######## 4. For each individual "get" page collect the direct (document) link into `libgen_dl/file_link_list.txt`.
 for file in ./libgen_dl/get/*; do 
     if [ -f "$file" ]; then 
-	link="https://libgen.rocks/$(cat "$file" | pup ':parent-of(h2:contains("GET")) attr{href}' | sed 's/\&amp;/\&/g')"
-	if [ "$link" != "https://libgen.rocks/" ]; 
-	then echo "$link" >> "libgen_dl/file_link_list.txt"
-	fi
+	echo "$(cat "$file" | pup ':parent-of(h2:contains("GET")) attr{href}' | sed 's/\\/\//')" >> "libgen_dl/file_link_list.txt"
     fi 
 done
 
