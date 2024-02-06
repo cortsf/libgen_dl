@@ -16,14 +16,7 @@ cd hello
 libgen_dl.sh "hello world"
 ```
 
-### Retrying failed downloads.
-
-``` bash
-cd hello
-libgen_dl.sh --retry
-```
-
-After finishing running this commands, libgen_dl will report the number of remaining failed downloads. Re-run if necessary (I'll probably add a loop).
+Use `libgen_dl.sh --retry` to retry downloading failed items. After finishing running this commands, libgen_dl will report the number of remaining failed downloads. Re-run if necessary (I'll probably add a loop).
 
 ## Alternatives
 - libgen-cli
