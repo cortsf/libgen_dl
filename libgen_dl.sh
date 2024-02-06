@@ -12,8 +12,10 @@ echo -e "###########################################################\n\n"
 
 [[ "$1" == "--retry" ]] && { 
     echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
+    echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log";
     aria2c -j3 --max-tries 3 --retry-wait 2 -i ./libgen_dl/file_download_failures -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures";
     echo "Remaining failed downloads: $(grep -c "https" libgen_dl/file_download_failures)";
+    echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $(grep -c "https" libgen_dl/file_download_failures)"  >> "libgen_dl/log";
     exit 0; 
 }
 
