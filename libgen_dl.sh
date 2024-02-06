@@ -13,6 +13,7 @@ echo -e "###########################################################\n\n"
 [[ "$1" == "--retry" ]] && { 
     echo "Retrying $(cat libgen_dl/file_download_failures | grep "https" | wc -l) failed downloads";
     aria2c -j3 -i ./libgen_dl/file_download_failures -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures";
+    echo "Remaining failed downloads: $(cat libgen_dl/file_download_failures | grep "https" | wc -l)";
     exit 1; 
 }
 
