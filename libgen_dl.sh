@@ -11,9 +11,9 @@ echo -e "###########################################################\n\n"
 [[ "$#" != 1 || "${#1}" -lt 3 ]] && { echo "Invalid arguments. See 'Usage'."; exit 1; }
 
 [[ "$1" == "--retry" ]] && { 
-    echo "Retrying $(cat libgen_dl/file_download_failures | grep "https" | wc -l) failed downloads";
+    echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
     aria2c -j3 -i ./libgen_dl/file_download_failures -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures";
-    echo "Remaining failed downloads: $(cat libgen_dl/file_download_failures | grep "https" | wc -l)";
+    echo "Remaining failed downloads: $(grep -c "https" libgen_dl/file_download_failures)";
     exit 0; 
 }
 
@@ -58,7 +58,7 @@ done
 
 ######## 5. Download files. Comment this line if you only want to collect links (For example to use another dl manager such as uget)
 aria2c -j3 -i ./libgen_dl/file_link_list.txt -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures"
-fails="$(cat libgen_dl/file_download_failures | grep "https" | wc -l)"  
+fails="$(grep -c "https" libgen_dl/file_download_failures)"  
 [[ $fails -gt 0 ]] && { 
     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'."
     echo -e "\033[31mERROR: $msg"
