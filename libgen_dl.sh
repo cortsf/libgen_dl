@@ -51,6 +51,6 @@ for file in ./libgen_dl/get/*; do
 done
 
 ######## 5. Download files. Comment this line if you only want to collect links (For example to use another dl manager such as uget)
-aria2c -j3 -i ./libgen_dl/file_link_list.txt -l ./libgen_dl/file_download_log
+aria2c -j3 -i ./libgen_dl/file_link_list.txt -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures"
 
 echo "$(date +"%Y-%m-%d %T" ) ======================================== End" >> "libgen_dl/log"
