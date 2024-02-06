@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo -e "\n\n###########################################################"
-echo -e "#### Dependencies: pup, aria2c"
+echo -e "#### Dependencies: aria2c"
 echo -e "#### Usage: 'mkdir <blah> && cd <blah> && libgen_dl.sh <keywords>' with length of <keywords> > 2 characters."
 echo -e "#### See ./libgen_dl/log after running. Manually inspect temp files under ./libgen_dl if needed."
 echo -e "#### Optionally comment last line to use uget or any other dl manager to download link list (./libgen_dl/file_link_list.txt)"
@@ -31,7 +31,7 @@ echo "$(date +"%Y-%m-%d %T" ) First page link: $(mkSearchLink "$1" 1)" >> "libge
 
 ######## 1. Download all "search" pages.
 aria2c -d "libgen_dl/pages" "$(mkSearchLink "$1" 1)" 
-page_count="$(cat "libgen_dl/pages/search.php" | pup 'script:nth-of-type(2)' | sed '4q;d' | sed 's/,.*//' | sed 's/\ *//')"
+page_count="$(grep -m 1 "[0-9]*, // общее число страниц" libgen_dl/pages/search.php | grep -o "[0-9]*")"
 page_count=${page_count:-1}
 echo "$(date +"%Y-%m-%d %T" ) Number of pages (100 items per page): $page_count" >> "libgen_dl/log"
 for i in $(seq 2 "$page_count"); do
@@ -40,7 +40,7 @@ done
 
 ######## 2. For each "search" page, collect every individual "get" link into `libgen_dl/get_page_link_list.txt`.
 for page_file in ./libgen_dl/pages/*; do 
-    link="$(cat "$page_file" | pup 'a[title="Libgen.li"] attr{href}')"
+    link="$(grep -o "http://libgen.li/ads.php?md5=[A-Z0-9]*" $page_file)"
     echo "$link" >> "libgen_dl/get_page_link_list.txt"
 done
 echo "$(date +"%Y-%m-%d %T" ) Total number of detected items: $(cat libgen_dl/get_page_link_list.txt | wc -l)" >> "libgen_dl/log"
@@ -52,7 +52,7 @@ aria2c -j3 -d "libgen_dl/get" -i ./libgen_dl/get_page_link_list.txt -l ./libgen_
 ######## 4. For each individual "get" page collect the direct (document) link into `libgen_dl/file_link_list.txt`.
 for file in ./libgen_dl/get/*; do 
     if [ -f "$file" ]; then 
-	echo "$(cat "$file" | pup ':parent-of(h2:contains("GET")) attr{href}' | sed 's/\\/\//')" >> "libgen_dl/file_link_list.txt"
+	echo "$(grep -o "https://cdn3.booksdl.org\\\get.php?md5=[a-z0-9]*&key=[A-Z0-9]*" $file | sed 's/\\/\//')" >> "libgen_dl/file_link_list.txt"
     fi 
 done
 
