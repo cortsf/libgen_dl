@@ -13,7 +13,7 @@ echo -e "###########################################################\n\n"
 [[ "$1" == "--retry" ]] && { 
     echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
     echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log";
-    aria2c -j3 --max-tries 3 --retry-wait 5 -i ./libgen_dl/file_download_failures -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures";
+    aria2c -j3 --max-tries 10 --retry-wait 5 -i ./libgen_dl/file_download_failures -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures";
     echo "Remaining failed downloads: $(grep -c "https" libgen_dl/file_download_failures)";
     echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $(grep -c "https" libgen_dl/file_download_failures)"  >> "libgen_dl/log";
     exit 0; 
@@ -59,7 +59,7 @@ for file in ./libgen_dl/get/*; do
 done
 
 ######## 5. Download files. Comment this block if you only want to collect links (For example to use another dl manager such as uget)
-aria2c -j3 --max-tries 3 --retry-wait 5 -i ./libgen_dl/file_link_list.txt -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures"
+aria2c -j3 --max-tries 10 --retry-wait 5 -i ./libgen_dl/file_link_list.txt -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures"
 fails="$(grep -c "https" libgen_dl/file_download_failures)"  
 [[ $fails -gt 0 ]] && { 
     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'."
