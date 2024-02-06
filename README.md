@@ -5,7 +5,6 @@ Batch download files from libgen.
 
 ## Dependecies
 
-- [pup](https://github.com/ericchiang/pup)
 - [aria2](https://github.com/aria2/aria2)
 
 ## Usage
