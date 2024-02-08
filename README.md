@@ -64,7 +64,7 @@ stdenv.mkDerivation rec {
 
 
 ###  Wrong filenames with .php extension
-Use this script to attempt fixing filenames with php extension (usually following the pattern: `get.php`, `get.1.php`, `get.2.php`, ..). This seems to be caused by libgen.li, I had the same problem with multiple dl managers. [#1](/../../issues/1) is meant to fix this by seting names based of bibtex titles crawled from libgen webpages. 
+Use either of these scripts to attempt fixing filenames with php extension (usually following the pattern: `get.php`, `get.1.php`, `get.2.php`, ..). This seems to be caused by libgen.li, I had the same problem with multiple dl managers. [#1](/../../issues/1) is meant to fix this by seting names based of bibtex titles crawled from libgen webpages. 
 
 This script only needs [exiftool](https://exiftool.org/) to set extensions and names. It fails to get titles in some cases where the following script (using ebook-meta) succeeds.
 
