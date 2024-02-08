@@ -50,7 +50,7 @@ echo "$(date +"%Y-%m-%d %T" ) Total number of detected items: $(cat libgen_dl/ge
 ######## 3. Download every "get" page and store it under `libgen_dl/get/`. Collect metadata.
 aria2c --console-log-level warn -j3 -d "libgen_dl/get" -i ./libgen_dl/get_page_link_list.txt -l ./libgen_dl/get_page_log
 for get_file in ./libgen_dl/get/*; do 
-    echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $get_file | sed 's///')" >> "libgen_dl/metadata.bib"
+    echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $get_file | sed 's/\r//')" >> "libgen_dl/metadata.bib"
 done
 
 ######## 4. For each individual "get" page collect the direct (document) link/s into `libgen_dl/file_link_list.txt`.
