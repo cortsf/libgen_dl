@@ -21,3 +21,46 @@ libgen_dl.sh downloads files by calling aria2c with `--max-tries 20`, it also co
 - libgen-cli
 - libgen-downloader
 - Many (mostly python?) others on gh.
+
+## Troubleshoot
+
+###  Wrong filenames
+Use this script to attempt fixing filenames with php extension (usually following the pattern: `get.php`, `get.1.php`, `get.3.php`). This seems to be caused by libgen.li, I had the same problem with multiple dl managers. #1 is meant to fix this by seting names based of bibtex titles crawled from libgen webpages. 
+
+This script needs exiftool (to set extensions) and Calibre's ebook-meta to read file titles from the document metada. If no metadata is available it will only set the extension.
+
+``` bash
+#!/usr/bin/env bash
+# This script needs exiftool and calibre's ebook-meta to work.
+
+filesWithExt=()
+
+echo "Set extensions:"
+for file in *.php 
+do
+    exifExt=$(exiftool -FileTypeExtension "$file" -S | sed 's/.*: //')
+    if [ "$exifExt" == "zip" ]; then
+	ext="epub";
+    else
+	ext="$exifExt"
+    fi
+    newName="$(basename "$file" .php).$ext"
+
+    echo "    $file	-> $newName"
+    mv "$file" "$newName"
+    filesWithExt+=("$newName")
+done
+
+echo -e "\nSet names:"
+for file in ${filesWithExt[@]}
+do
+    title="$(ebook-meta "$file" | awk -F "^Title +: " 'NF > 1 {print $2}')"
+    if [[ "./$title" == "${file%.*}" || "$title" == "" ]]; then
+	newName="$file" 
+    else
+	newName="$title.${file##*.}"
+    fi 
+    echo "    $file	-> $newName"
+    mv "$file" "$newName"
+done
+```
