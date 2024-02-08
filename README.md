@@ -23,6 +23,8 @@ libgen_dl.sh downloads files by calling aria2c with `--max-tries 20`, it also co
 - Many (mostly python?) others on gh.
 
 ## Derivation
+Be sure to set the correct rev and sha256.
+
 ``` nix
 { lib, stdenv, fetchFromGitHub, pkg-config, aria2}:
 
@@ -33,8 +35,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "cortsf";
     repo = "libgen_dl";
-    rev = "73a10995be8abace43b090492ef7a75548b576ee";
-    sha256 = "0lwpg64l3871asxjwh700rpnfxz6pnvhlf3r8hy0gbfdfciwd38l";
+    rev = "<rev>";
+    sha256 = "<sha256>";
   };
 
   strictDeps = true;
