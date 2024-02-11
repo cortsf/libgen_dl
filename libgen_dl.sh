@@ -13,7 +13,7 @@ echo -e "###########################################################\n\n"
 [[ "$1" == "--retry" ]] && { 
     echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
     echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log";
-    aria2c  --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --auto-save-interval 0;
+    aria2c  --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --auto-save-interval 0;
     rem="$(grep -c "https" libgen_dl/file_download_failures)"
     echo "Remaining failed downloads: $rem";
     echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $rem"  >> "libgen_dl/log";
@@ -47,7 +47,7 @@ for page_file in ./libgen_dl/pages/*; do
     link="$(grep -o "http://libgen.li/ads.php?md5=[A-Z0-9]*" $page_file)"
     echo "$link" >> "libgen_dl/get_page_link_list.txt"
 done
-echo "$(date +"%Y-%m-%d %T" ) Total number of detected items: $(cat libgen_dl/get_page_link_list.txt | wc -l)" >> "libgen_dl/log"
+echo "$(date +"%Y-%m-%d %T" ) Total number of crawled 'get' page links: $(cat libgen_dl/get_page_link_list.txt | wc -l)" >> "libgen_dl/log"
 
 ######## 3. Download every "get" page and store it under `libgen_dl/get/`. Collect metadata.
 aria2c --console-log-level warn -j3 -d "libgen_dl/get" -i ./libgen_dl/get_page_link_list.txt -l ./libgen_dl/get_page_log
@@ -60,9 +60,10 @@ for file in ./libgen_dl/get/*; do
     pseudolink="$(grep -o "booksdl.org\\\get.php?md5=[a-z0-9]*&key=[A-Z0-9]*" $file | sed 's/\\/\//')"
     [[ "$pseudolink" == "" ]] || echo "https://cdn3.$pseudolink	https://cdn2.$pseudolink" >> "libgen_dl/file_link_list.txt"
 done
+echo "$(date +"%Y-%m-%d %T" ) Total number of direct (document) links: $(cat libgen_dl/file_link_list.txt | wc -l)" >> "libgen_dl/log"
 
 ######## 5. Download files. Comment this block if you only want to collect links (For example to use another dl manager such as uget)
-aria2c --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --auto-save-interval 0
+aria2c --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --auto-save-interval 0
 fails="$(grep -c "https" ./libgen_dl/file_download_failures)"
 [[ $fails -gt 0 ]] && { 
     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'.";
