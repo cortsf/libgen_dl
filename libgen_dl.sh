@@ -13,7 +13,7 @@ echo -e "###########################################################\n\n"
 [[ "$1" == "--retry" ]] && { 
     echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
     echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log";
-    aria2c  --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --auto-save-interval 0;
+    aria2c --console-log-level notice -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file;
     rem="$(grep -c "https" libgen_dl/file_download_failures)"
     echo "Remaining failed downloads: $rem";
     echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $rem"  >> "libgen_dl/log";
@@ -31,13 +31,13 @@ mkdir -p "libgen_dl/get"
 mkdir -p "libgen_dl/pages"
 echo "$(date +"%Y-%m-%d %T" ) ======================================== START " >> "libgen_dl/log"
 echo "$(date +"%Y-%m-%d %T" ) Search keywords: $1" >> "libgen_dl/log"
-echo "$(date +"%Y-%m-%d %T" ) First page link: $(mkSearchLink "$1" 1)" >> "libgen_dl/log"
+echo "$(date +"%Y-%m-%d %T" ) First search page link: $(mkSearchLink "$1" 1)" >> "libgen_dl/log"
 
 ######## 1. Download all "search" pages.
 aria2c --console-log-level warn -d "libgen_dl/pages" "$(mkSearchLink "$1" 1)" 
 page_count="$(grep -m 1 "[0-9]*, // общее число страниц" libgen_dl/pages/search.php | grep -o "[0-9]*")"
 page_count=${page_count:-1}
-echo "$(date +"%Y-%m-%d %T" ) Number of pages (100 items per page): $page_count" >> "libgen_dl/log"
+echo "$(date +"%Y-%m-%d %T" ) Number of search pages (100 items per page): $page_count" >> "libgen_dl/log"
 for i in $(seq 2 "$page_count"); do
     aria2c --console-log-level warn -d "./libgen_dl/pages" "$(mkSearchLink "$1" "$i")"
 done
@@ -63,7 +63,7 @@ done
 echo "$(date +"%Y-%m-%d %T" ) Total number of direct (document) links: $(cat libgen_dl/file_link_list.txt | wc -l)" >> "libgen_dl/log"
 
 ######## 5. Download files. Comment this block if you only want to collect links (For example to use another dl manager such as uget)
-aria2c --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --auto-save-interval 0
+aria2c --console-log-level notice -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2  --allow-overwrite true 
 fails="$(grep -c "https" ./libgen_dl/file_download_failures)"
 [[ $fails -gt 0 ]] && { 
     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'.";
