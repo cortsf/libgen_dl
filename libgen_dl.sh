@@ -13,7 +13,7 @@ echo -e "###########################################################\n\n"
 [[ "$1" == "--retry" ]] && { 
     echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
     echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log";
-    aria2c --console-log-level notice -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8; 
+    aria2c --console-log-level info -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8; 
     rem="$(grep -c "https" libgen_dl/file_download_failures)"
     echo "Remaining failed downloads: $rem";
     echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $rem"  >> "libgen_dl/log";
@@ -63,7 +63,7 @@ done
 echo "$(date +"%Y-%m-%d %T" ) Total number of direct (document) links: $(cat libgen_dl/file_link_list.txt | wc -l)" >> "libgen_dl/log"
 
 ######## 5. Download files. Comment this block if you only want to collect links (For example to use another dl manager such as uget)
-aria2c --console-log-level notice -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2  --allow-overwrite true --content-disposition-default-utf8
+aria2c --console-log-level info -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2  --allow-overwrite true --content-disposition-default-utf8
 fails="$(grep -c "https" ./libgen_dl/file_download_failures)"
 [[ $fails -gt 0 ]] && { 
     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'.";
