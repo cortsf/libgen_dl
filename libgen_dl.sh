@@ -49,16 +49,14 @@ for page_file in ./libgen_dl/pages/*; do
 done
 echo "$(date +"%Y-%m-%d %T" ) Total number of crawled 'get' page links: $(cat libgen_dl/get_page_link_list.txt | wc -l)" >> "libgen_dl/log"
 
-######## 3. Download every "get" page and store it under `libgen_dl/get/`. Collect metadata.
+######## 3. Download every "get" page and store it under `libgen_dl/get/`. 
 aria2c --console-log-level warn -j3 -d "libgen_dl/get" -i ./libgen_dl/get_page_link_list.txt -l ./libgen_dl/get_page_log
-for get_file in ./libgen_dl/get/*; do 
-    echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $get_file | sed 's/\r//')" >> "libgen_dl/metadata.bib"
-done
 
-######## 4. For each individual "get" page collect the direct (document) link/s into `libgen_dl/file_link_list.txt`.
+######## 4. For each individual "get" page collect the direct (document) link/s into `libgen_dl/file_link_list.txt`. Collect metadata.
 for file in ./libgen_dl/get/*; do 
     pseudolink="$(grep -o "booksdl.org\\\get.php?md5=[a-z0-9]*&key=[A-Z0-9]*" $file | sed 's/\\/\//')"
     [[ "$pseudolink" == "" ]] || echo "https://cdn3.$pseudolink	https://cdn2.$pseudolink" >> "libgen_dl/file_link_list.txt"
+    echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $file | sed 's/\r//')" >> "libgen_dl/metadata.bib"
 done
 echo "$(date +"%Y-%m-%d %T" ) Total number of direct (document) links: $(cat libgen_dl/file_link_list.txt | wc -l)" >> "libgen_dl/log"
 
