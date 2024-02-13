@@ -1,25 +1,31 @@
 #!/usr/bin/env bash
 
-echo -e "\n\n###########################################################"
-echo -e "#### Dependencies: aria2c"
-echo -e "#### Usage: 'mkdir <blah> && cd <blah> && libgen_dl.sh <keywords>' with length of <keywords> > 2 characters."
-echo -e "#### See ./libgen_dl/log after running. Manually inspect temp files under ./libgen_dl if needed."
-echo -e "#### Optionally comment last line to use uget or any other dl manager to download link list (./libgen_dl/file_link_list.txt)"
-echo -e "#### Alternativelly, use 'libgen_dl --retry' to download links stored in 'libgen_dl/file_download_failures'"
-echo -e "###########################################################\n\n"
+[[ "$#" != 1 || "${#1}" -lt 3 ]] && { echo "Invalid arguments. Call with '--help' to see usage instructions."; exit 1; }
 
-[[ "$#" != 1 || "${#1}" -lt 3 ]] && { echo "Invalid arguments. See 'Usage'."; exit 1; }
-
-[[ "$1" == "--retry" ]] && { 
-    echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads";
-    echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log";
-    aria2c --console-log-level info -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8; 
-    rem="$(grep -c "https" libgen_dl/file_download_failures)"
-    echo "Remaining failed downloads: $rem";
-    echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $rem"  >> "libgen_dl/log";
-    [[ "$rem" == "0" ]] && echo "$(date +"%Y-%m-%d %T" ) ======================================== END" >> "libgen_dl/log"
-    exit 0; 
-}
+case "$1" in
+    "--help")
+	echo -e "#### Dependencies: aria2c"
+	echo -e "#### Usage: 'mkdir <blah> && cd <blah> && libgen_dl.sh <keywords>' with length of <keywords> > 2 characters."
+	echo -e "#### Run 'libgen_dl.sh --log'. After running. Manually inspect temp files under ./libgen_dl if needed."
+	echo -e "#### If necessary, use 'libgen_dl --retry' to retry failed downloads collected in 'libgen_dl/file_download_failures'"
+	echo -e "#### Optionally comment last line to use uget or any other dl manager to download link list (./libgen_dl/file_link_list.txt)"
+	exit 0
+	;;
+    "--log")
+	cat libgen_dl/log
+	exit 0
+	;;
+    "--retry")
+	echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"
+	echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log"
+	aria2c --console-log-level info -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8
+	rem="$(grep -c "https" libgen_dl/file_download_failures)"
+	echo "Remaining failed downloads: $rem"
+	echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $rem"  >> "libgen_dl/log"
+	[[ "$rem" == "0" ]] && echo "$(date +"%Y-%m-%d %T" ) ======================================== END" >> "libgen_dl/log"
+	exit 0 
+	;;
+esac
 
 mkSearchLink () {
     echo "https://libgen.rs/search.php?res=100&req=$(echo "$1" | sed 's/\ /%20/g')&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=$2"
