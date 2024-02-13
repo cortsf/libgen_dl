@@ -12,10 +12,13 @@ case "$1" in
 	exit 0
 	;;
     "--log")
-	cat libgen_dl/log
-	exit 0
+	cat libgen_dl/log && exit 0 || exit 1
+	;;
+    "--first")
+	grep -o 'https://.*' ./libgen_dl/log && exit 0 || exit 1
 	;;
     "--retry")
+	[ -f ./libgen_dl/file_download_failures ]  || { echo "Can't find 'libgen_dl/file_download_failures'"; exit 1; }
 	echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"
 	echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/log"
 	aria2c --console-log-level info -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download_log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8
