@@ -21,7 +21,7 @@ case "$1" in
 	[ -f ./libgen_dl/file_download_failures ]  || { echo "Can't find 'libgen_dl/file_download_failures'"; exit 1; }
 	echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"
 	echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/libgen_dl.log"
-	aria2c --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download.log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8
+	aria2c --disable-ipv6 --check-certificate=false --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download.log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8
 	rem="$(grep -c "https" libgen_dl/file_download_failures)"
 	echo "Remaining failed downloads: $rem"
 	echo "$(date +"%Y-%m-%d %T" ) Remaining failed downloads: $rem"  >> "libgen_dl/libgen_dl.log"
@@ -80,14 +80,14 @@ done
 echo "$(paste libgen_dl/link_lists/*)" >> libgen_dl/link_lists/combined.txt
 
 ######## 5. Download files. Comment this block if you only want to collect links (For example to use another dl manager such as uget)
-# aria2c --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_link_list.txt --log-level notice -l ./libgen_dl/file_download.log --save-session "libgen_dl/file_download_failures" --save-session-interval 2  --allow-overwrite true --content-disposition-default-utf8
-# fails="$(grep -c "https" ./libgen_dl/file_download_failures)"
-# [[ $fails -gt 0 ]] && { 
-#     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'.";
-#     echo -e "\033[31mERROR: $msg";
-#     echo "$(date +"%Y-%m-%d %T" ) $msg" >> "libgen_dl/libgen_dl.log";
-#     exit 1; 
-# }
+aria2c --disable-ipv6 --check-certificate=false --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/link_lists/combined.txt --log-level notice -l ./libgen_dl/file_download.log --save-session "libgen_dl/file_download_failures" --save-session-interval 2  --allow-overwrite true --content-disposition-default-utf8
+fails="$(grep -c "https" ./libgen_dl/file_download_failures)"
+[[ $fails -gt 0 ]] && { 
+    msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'.";
+    echo -e "\033[31mERROR: $msg";
+    echo "$(date +"%Y-%m-%d %T" ) $msg" >> "libgen_dl/libgen_dl.log";
+    exit 1; 
+}
 
 ######## 6. Bye.
 echo "$(date +"%Y-%m-%d %T" ) ======================================== END" >> "libgen_dl/libgen_dl.log"
