@@ -8,7 +8,7 @@ case "$1" in
 	echo -e "#### Usage: 'mkdir <blah> && cd <blah> && libgen_dl.sh <keywords>' with length of <keywords> > 2 characters."
 	echo -e "#### After finishing, libgen_dl will inform you of all failed downloads, if any. If necessary you can use 'libgen_dl --retry' to re-attempt failed links collected in 'libgen_dl/file_download_failures'"
 	echo -e "#### You can call 'libgen_dl.sh --log'. After running and manually inspect temp files under ./libgen_dl if needed."
-	echo -e "#### Optionally comment block #5 in this script to use uget or any other dl manager to download link list (./libgen_dl/file_link_list.txt)"
+	echo -e "#### Optionally comment block #5 in this script to use uget or any other dl manager to download any of the link lists (./libgen_dl/link_lists/)"
 	exit 0
 	;;
     "--log")
