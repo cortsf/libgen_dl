@@ -4,7 +4,7 @@ Batch download files from libgen.
 **NOTE:** Changes on libgen often cause libgen_dl to fail. If this happens please open an issue and I'll try to fix it.
 
 ## Current status (Sat Feb 17 20:02:35 2024 UTC)
-libgen.li has been down for a while and libgen.lol cetificates expired. Until this gets fixed, I recommend using this script to generate (libgen.lol) link lists only, which can be downloaded with uget despite the certificate issue with libgen.lol (can't find a solution for aria2 yet). Call this script as usual, then open `.libgen_dl/link_lists/libgen_lol.txt` with uget batch download function.
+libgen.li has been down for a while and libgen.lol cetificates expired. Until this gets fixed, I recommend using this script to generate (libgen.lol) link lists only, which can be downloaded with uget despite the certificate issue (can't find a solution for aria2 yet). Call this script as usual, then open `.libgen_dl/link_lists/libgen_lol.txt` with uget batch download function.
 
 ## Dependecies
 
