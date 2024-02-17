@@ -69,15 +69,12 @@ aria2c --console-log-level warn -j3 --max-tries 3 --retry-wait 3 -d "libgen_dl/g
 ########## 4. For each individual "get" page collect the direct (document) link/s into `libgen_dl/file_link_list.txt`. Collect metadata.
 cat ./libgen_dl/md5_list.txt | while read hash; do 
     hash_downcase="$(echo $hash | tr '[:upper:]' '[:lower:]')"
-    get_page_lol="./libgen_dl/get_lol/$hash"
-    echo "$(cat "$get_page_lol" | grep -o "https://download.library.lol/main/[0-9]*/$hash_downcase/[^\"]*" )" >> "libgen_dl/link_lists/libgen_lol.txt"
+    echo "$(grep -o "https://download.library.lol/main/[0-9]*/$hash_downcase/[^\"]*" "./libgen_dl/get_lol/$hash" )" >> "libgen_dl/link_lists/libgen_lol.txt"
     [[ -z "$(ls -A ./libgen_dl/get_li/)" ]] || {
 	link_li_chunk="$(cat ./libgen_dl/get_li/* | grep -o "$hash_downcase&key=[A-Z0-9]*")"
-	[[ "$link_li_chunk" == "" ]] || {
-	    echo "https://cdn3.booksdl.org/get.php?md5=$link_li_chunk" >> "libgen_dl/link_lists/libgen_li_cdn2.txt";
-	    echo "https://cdn2.booksdl.org/get.php?md5=$link_li_chunk" >> "libgen_dl/link_lists/libgen_li_cdn3.txt";
-	    echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $file | sed 's/\r//')" >> "libgen_dl/metadata.bib"
-	}
+	echo "https://cdn3.booksdl.org/get.php?md5=$link_li_chunk" >> "libgen_dl/link_lists/libgen_li_cdn2.txt";
+	echo "https://cdn2.booksdl.org/get.php?md5=$link_li_chunk" >> "libgen_dl/link_lists/libgen_li_cdn3.txt";
+	echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $file | sed 's/\r//')" >> "libgen_dl/metadata.bib"
     }
 done
 echo "$(paste libgen_dl/link_lists/*)" >> libgen_dl/link_lists/combined.txt
