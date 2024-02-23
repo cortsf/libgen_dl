@@ -45,25 +45,27 @@ echo "$(date +"%Y-%m-%d %T" ) Search keywords: $1" >> "libgen_dl/libgen_dl.log"
 echo "$(date +"%Y-%m-%d %T" ) First search page link: $(mkSearchLink "$1" 1)" >> "libgen_dl/libgen_dl.log"
 
 ######## 1. Download all "search" pages.
-aria2c --console-log-level warn -d "libgen_dl/search_pages" "$(mkSearchLink "$1" 1)" 
+aria2c --console-log-level warn --max-tries 3 --retry-wait 3 -d "libgen_dl/search_pages" "$(mkSearchLink "$1" 1)" 
 page_count="$(grep -m 1 "[0-9]*, // общее число страниц" libgen_dl/search_pages/search.php | grep -o "[0-9]*")"
 page_count=${page_count:-1}
-echo "$(date +"%Y-%m-%d %T" ) Number of search pages (100 items per page): $page_count" >> "libgen_dl/libgen_dl.log"
+echo "$(date +"%Y-%m-%d %T" ) Number of search pages (100 max items per page): $page_count" >> "libgen_dl/libgen_dl.log"
 for i in $(seq 2 "$page_count"); do
-    aria2c --console-log-level warn -d "./libgen_dl/search_pages" "$(mkSearchLink "$1" "$i")"
+    aria2c --console-log-level warn --max-tries 3 --retry-wait 3 -d "./libgen_dl/search_pages" "$(mkSearchLink "$1" "$i")"
 done
 
 ######## 2. For each "search" page, collect every individual "get" link into `libgen_dl/get_page_link_list.txt`.
 for search_page in ./libgen_dl/search_pages/*; do 
     echo "$(grep -o "http://library.lol/main/[A-Z0-9]*" $search_page)" >> "libgen_dl/get_page_link_list_lol.txt"
-    echo "$(cat libgen_dl/get_page_link_list_lol.txt | sed 's/http:\/\/library.lol\/main\///')" >> "libgen_dl/md5_list.txt"
-    echo "$(cat libgen_dl/md5_list.txt | sed 's/^/http:\/\/libgen.li\/ads.php\?md5=/')" >> "libgen_dl/get_page_link_list_li.txt"
 done
-echo "$(date +"%Y-%m-%d %T" ) Total number of items: $(cat libgen_dl/md5_list.txt | wc -l)" >> "libgen_dl/libgen_dl.log"
+echo "$(cat libgen_dl/get_page_link_list_lol.txt | sed 's/http:\/\/library.lol\/main\///')" >> "libgen_dl/md5_list.txt"
+echo "$(cat libgen_dl/md5_list.txt | sed 's/^/http:\/\/libgen.li\/ads.php\?md5=/')" >> "libgen_dl/get_page_link_list_li.txt"
+echo "$(date +"%Y-%m-%d %T" ) Total number of detected items: $(cat libgen_dl/md5_list.txt | wc -l)" >> "libgen_dl/libgen_dl.log"
 
 # ######## 3. Download every "get" page. 
 aria2c --console-log-level warn -j3 --max-tries 3 --retry-wait 3 -d "libgen_dl/get_lol" -i ./libgen_dl/get_page_link_list_lol.txt -l ./libgen_dl/get_page_lol.log
-# aria2c --console-log-level warn -j3 --max-tries 3 --retry-wait 0 -d "libgen_dl/get_li" -i ./libgen_dl/get_page_link_list_li.txt -l ./libgen_dl/get_page_li.log
+echo "$(date +"%Y-%m-%d %T" ) Total number of get pages (libgen.lol): $(ls -1 ./libgen_dl/get_lol/* | wc -l)" >> "libgen_dl/libgen_dl.log"
+aria2c --console-log-level warn -j3 --max-tries 3 --retry-wait 3 -d "libgen_dl/get_li" -i ./libgen_dl/get_page_link_list_li.txt -l ./libgen_dl/get_page_li.log
+echo "$(date +"%Y-%m-%d %T" ) Total number of get pages (libgen.li): $(ls -1 ./libgen_dl/get_li/* | wc -l)" >> "libgen_dl/libgen_dl.log"
 
 
 ########## 4. For each individual "get" page collect the direct (document) link/s into `libgen_dl/file_link_list.txt`. Collect metadata.
