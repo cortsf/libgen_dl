@@ -63,23 +63,23 @@ echo "$(date +"%Y-%m-%d %T" ) Total number of detected items: $(cat libgen_dl/md
 
 # ######## 3. Download every "get" page. 
 aria2c --console-log-level warn -j3 --max-tries 3 --retry-wait 3 -d "libgen_dl/get_lol" -i ./libgen_dl/get_page_link_list_lol.txt -l ./libgen_dl/get_page_lol.log
-echo "$(date +"%Y-%m-%d %T" ) Total number of get pages (libgen.lol): $(ls -1 ./libgen_dl/get_lol/* | wc -l)" >> "libgen_dl/libgen_dl.log"
+echo "$(date +"%Y-%m-%d %T" ) Total number of 'get' pages (libgen.lol): $(ls -1 ./libgen_dl/get_lol/* | wc -l)" >> "libgen_dl/libgen_dl.log"
 aria2c --console-log-level warn -j3 --max-tries 3 --retry-wait 3 -d "libgen_dl/get_li" -i ./libgen_dl/get_page_link_list_li.txt -l ./libgen_dl/get_page_li.log
-echo "$(date +"%Y-%m-%d %T" ) Total number of get pages (libgen.li): $(ls -1 ./libgen_dl/get_li/* | wc -l)" >> "libgen_dl/libgen_dl.log"
+echo "$(date +"%Y-%m-%d %T" ) Total number of 'get' pages (libgen.li): $(ls -1 ./libgen_dl/get_li/* | wc -l)" >> "libgen_dl/libgen_dl.log"
 
 
 ########## 4. For each individual "get" page collect the direct (document) link/s into `libgen_dl/file_link_list.txt`. Collect metadata.
 cat ./libgen_dl/md5_list.txt | while read hash; do 
     hash_downcase="$(echo $hash | tr '[:upper:]' '[:lower:]')"
-    link_libgen_lol="$(grep -o "https://download.library.lol/main/[0-9]*/$hash_downcase/[^\"]*" "./libgen_dl/get_lol/$hash" )"
-    echo "$link_libgen_lol" >> "libgen_dl/link_lists/libgen_lol.txt"
-    [[ -z "$(ls -A ./libgen_dl/get_li/)" ]] || {
-	link_libgen_li_chunk="$(cat ./libgen_dl/get_li/* | grep -o "$hash_downcase&key=[A-Z0-9]*")"
+    [ -f "./libgen_dl/get_lol/$hash" ] && { echo "$(grep -o "https://download.library.lol/main/[0-9]*/$hash_downcase/[^\"]*" "./libgen_dl/get_lol/$hash" )" >> "libgen_dl/link_lists/libgen_lol.txt"; } || { echo "" >> "libgen_dl/link_lists/libgen_lol.txt"; }
+    file_li="$(grep -Rl "$hash" ./libgen_dl/get_li)"
+    [ -z "$file_li" ] || {
+	link_libgen_li_chunk="$(grep -o "$hash_downcase&key=[A-Z0-9]*" "$file_li")"
 	link_libgen_li_cdn2="https://cdn2.booksdl.org/get.php?md5=$link_libgen_li_chunk"
 	link_libgen_li_cdn3="https://cdn3.booksdl.org/get.php?md5=$link_libgen_li_chunk"
 	echo "$link_libgen_li_cdn2" >> "libgen_dl/link_lists/libgen_li_cdn2.txt";
 	echo "$link_libgen_li_cdn3" >> "libgen_dl/link_lists/libgen_li_cdn3.txt";
-	echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $file | sed 's/\r//')" >> "libgen_dl/metadata.bib"
+	echo -e "$(grep '\@book{book:(.*\n)*.*}}' -Pzo $file_li | sed 's/\r//')" >> "libgen_dl/metadata.bib"
     }
 done
 echo "$(paste libgen_dl/link_lists/*)" >> libgen_dl/link_lists/combined.txt
