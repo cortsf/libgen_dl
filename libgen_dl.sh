@@ -15,6 +15,7 @@ case "$1" in
 	cat libgen_dl/libgen_dl.log && exit 0 || exit 1
 	;;
     "--first")
+	echo "First search page link:"
 	grep -o 'https://.*' ./libgen_dl/libgen_dl.log && exit 0 || exit 1
 	;;
     "--retry")
