@@ -18,6 +18,21 @@ case "$1" in
 	echo "First search page link:"
 	grep -o 'https://.*' ./libgen_dl/libgen_dl.log && exit 0 || exit 1
 	;;
+    "--show-failed-links")
+	it=0
+	grep '^https://.*$' ./libgen_dl/file_download_failures | while read line; do 
+	    hash_lower="$(echo "$line" | grep -Po "https://cdn[23]\.booksdl\.org/get\.php\?md5=\K([^&])*|https://download\.library\.lol/main/[0-9]*/\K([^/])*" | head -1)"
+	    hash="$(echo "$hash_lower" | tr '[:lower:]' '[:upper:]')"
+	    # FIX: [^@] works here but it's not safe. metadata="$(cat ./libgen_dl/metadata.bib | grep -Pzo "\@book{book:([^@])*   url =       {libgen\.li/file\.php\?md5=$hash_lower}}")"
+	    echo -e "\n$it: $hash\n    libgen_lol: http://library.lol/main/$hash\n    libgen.li: http://libgen.li/ads.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n    libgen.rs: http://libgen.rs/book/index.php?md5=$hash"
+	    it=$(($it+1))
+	done
+	exit 0
+	;;
+    "--count-failed")
+	echo "Number of failed downloads:"
+	grep -c "^https.*$" ./libgen_dl/file_download_failures && exit 0 || exit 1
+	;;
     "--retry")
 	[ -f ./libgen_dl/file_download_failures ]  || { echo "Can't find 'libgen_dl/file_download_failures'"; exit 1; }
 	echo "Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"
