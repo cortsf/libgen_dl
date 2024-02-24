@@ -86,7 +86,7 @@ echo "$(paste libgen_dl/link_lists/*)" >> libgen_dl/link_lists/combined.txt
 
 ######## 5. Download files. Comment this block if you only want to collect links (For example to use another dl manager such as uget)
 aria2c --disable-ipv6 --check-certificate=false --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/link_lists/combined.txt --log-level notice -l ./libgen_dl/file_download.log --save-session "libgen_dl/file_download_failures" --save-session-interval 2  --allow-overwrite true --content-disposition-default-utf8
-fails="$(grep -c "https" ./libgen_dl/file_download_failures)"
+fails="$(grep -c "https.*$" ./libgen_dl/file_download_failures)"
 [[ $fails -gt 0 ]] && { 
     msg="$fails failed downloads. Check 'libgen_dl/file_download_failures' and/or retry with 'libgen_dl --retry'.";
     echo -e "\033[31mERROR: $msg";

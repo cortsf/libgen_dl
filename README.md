@@ -4,8 +4,6 @@ Batch download files from libgen.
 **NOTE:** Changes on libgen often cause libgen_dl to fail. If this happens please open an issue and I'll try to fix it.
 
 ## Current status (Sat Feb 17 20:02:35 2024 UTC)
-libgen.li has been down for a while, until this gets fixed libgen_dl will download files from libgen.lol only. 
-
 libgen.lol certificates expired, for this reason aria2c has to be called with `--disable-ipv6 --check-certificate=false`.
 
 ## Dependecies
