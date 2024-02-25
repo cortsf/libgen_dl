@@ -18,7 +18,7 @@ case "$1" in
 	echo "First search page link:"
 	grep -o 'https://.*' ./libgen_dl/libgen_dl.log && exit 0 || exit 1
 	;;
-    "--show-failed-links")
+    "--show-remaining-links")
 	it=0
 	grep '^https://.*$' ./libgen_dl/file_download_failures | while read line; do 
 	    hash_lower="$(echo "$line" | grep -Po "https://cdn[23]\.booksdl\.org/get\.php\?md5=\K([^&])*|https://download\.library\.lol/main/[0-9]*/\K([^/])*" | head -1)"
