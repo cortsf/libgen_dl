@@ -1,14 +1,15 @@
 ## Description
 Batch download files from libgen.
 
-**NOTE:** Changes on libgen often cause libgen_dl to fail. If this happens please open an issue and I'll try to fix it.
+## Notes
+- Changes on libgen often cause libgen_dl to fail. If this happens please open an issue and I'll try to fix it.
 
 ## Current status (Sat Feb 17 20:02:35 2024 UTC)
 libgen.lol certificates expired, for this reason aria2c has to be called with `--disable-ipv6 --check-certificate=false`.
 
 ## Dependecies
 
-- [aria2](https://github.com/aria2/aria2)
+- aria2c (provided by [aria2](https://github.com/aria2/aria2))
 
 ## Usage
 
