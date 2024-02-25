@@ -29,8 +29,8 @@ case "$1" in
 	done
 	exit 0
 	;;
-    "--count-failed")
-	echo "Number of failed downloads:"
+    "--count-remaining")
+	echo "Number of remaining (or failed) downloads:"
 	grep -c "^https.*$" ./libgen_dl/file_download_failures && exit 0 || exit 1
 	;;
     "--retry")
