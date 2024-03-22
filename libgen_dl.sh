@@ -51,9 +51,12 @@ case "$1" in
 	echo "$(date +"%Y-%m-%d %T" ) Retrying $(grep -c "https" libgen_dl/file_download_failures) failed downloads"  >> "libgen_dl/libgen_dl.log"
 	aria2c --disable-ipv6 --check-certificate=false --console-log-level warn -j3 --max-tries 20 --retry-wait 5 -i ./libgen_dl/file_download_failures --log-level notice -l ./libgen_dl/file_download.log --save-session "libgen_dl/file_download_failures" --save-session-interval 2 --allow-overwrite true --remove-control-file --content-disposition-default-utf8
 	rem="$(grep -c "https" libgen_dl/file_download_failures)"
-	echo -e "\033[31mRemaining (failed) downloads: $rem. Call again with --retry or --show-remaining-links"
+	# echo -e "\033[31mRemaining (failed) downloads: $rem. Call again with --retry or --show-remaining-links"
 	echo "$(date +"%Y-%m-%d %T" ) Remaining (failed) downloads: $rem"  >> "libgen_dl/libgen_dl.log"
-	[[ "$rem" == "0" ]] && echo "$(date +"%Y-%m-%d %T" ) ======================================== END" >> "libgen_dl/libgen_dl.log"
+	[[ "$rem" == "0" ]] && {
+	    echo -e "Remaining (failed) downloads: $rem.";
+	    echo "$(date +"%Y-%m-%d %T" ) ======================================== END" >> "libgen_dl/libgen_dl.log";
+	} || echo -e "\033[31mRemaining (failed) downloads: $rem. Call again with --retry or --show-remaining-links"
 	exit 0 
 	;;
 esac
