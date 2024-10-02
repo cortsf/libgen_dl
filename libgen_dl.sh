@@ -24,7 +24,7 @@ case "$1" in
 	    hash_lower="$(echo "$line" | grep -Po "https://cdn[23]\.booksdl\.org/get\.php\?md5=\K([^&])*|https://download\.library\.lol/main/[0-9]*/\K([^/])*" | head -1)"
 	    hash="$(echo "$hash_lower" | tr '[:lower:]' '[:upper:]')"
 	    # FIX: [^@] works here but it's not safe. metadata="$(cat ./libgen_dl/metadata.bib | grep -Pzo "\@book{book:([^@])*   url =       {libgen\.li/file\.php\?md5=$hash_lower}}")"
-	    echo -e "$it: $hash\n    libgen_lol: http://library.lol/main/$hash\n    libgen.li: http://libgen.li/ads.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n    libgen.rs: http://libgen.rs/book/index.php?md5=$hash\n"
+	    echo -e "$it: $hash\n    libgen_lol: http://library.lol/main/$hash\n    libgen.li: http://libgen.li/ads.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n"
 	    it=$(($it+1))
 	done
 	exit 0
@@ -34,7 +34,7 @@ case "$1" in
 	while read hash_upper; do 
             hash="$(echo "$hash_upper" | tr '[:upper:]' '[:lower:]')"
             grep -q "$hash" ./libgen_dl/link_lists/combined.txt || {
-		echo -e "$it: $hash\n    libgen_lol: http://library.lol/main/$hash\n    libgen.li: http://libgen.li/ads.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n    libgen.rs: http://libgen.rs/book/index.php?md5=$hash\n";
+		echo -e "$it: $hash\n    libgen_lol: http://library.lol/main/$hash\n    libgen.li: http://libgen.li/ads.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n    libgen.is: http://libgen.is/book/index.php?md5=$hash\n";
 		it=$(($it+1));
 	    }
 	done < <(cat ./libgen_dl/md5_list.txt)
@@ -61,7 +61,7 @@ case "$1" in
 esac
 
 mkSearchLink () {
-    echo "https://libgen.rs/search.php?res=100&req=$(echo "$1" | sed 's/\ /%20/g')&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=$2"
+    echo "https://libgen.is/search.php?res=100&req=$(echo "$1" | sed 's/\ /%20/g')&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=$2"
     }
 
 ######### 0. Create directories, log stuff
