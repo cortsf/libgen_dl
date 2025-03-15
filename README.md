@@ -4,6 +4,9 @@ Batch download files from libgen.
 ## Notes
 - Changes on library genesis often cause libgen_dl to fail. If this happens please open an issue and I'll try to fix it.
 
+## Current status (Fri Mar 14 2025)
+Libgen.lol down. Remove
+
 ## Current status (Tue Oct 1 2024)
 Libgen.rs down. Using libgen.is.
 
