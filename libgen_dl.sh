@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#shellcheck disable=all
 
 [[ "$#" != 1 || "${#1}" -lt 3 ]] && { echo "Invalid arguments. Call with '--help' to see usage instructions."; exit 1; }
 
