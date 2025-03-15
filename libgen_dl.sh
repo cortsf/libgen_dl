@@ -59,7 +59,7 @@ case "$1" in
 esac
 
 mkSearchLink () {
-    echo "https://libgen.rs/search.php?res=100&req=$(echo "$1" | sed 's/\ /%20/g')&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=$2"
+    echo "https://libgen.is/search.php?res=100&req=$(echo "$1" | sed 's/\ /%20/g')&phrase=0&view=simple&column=def&sort=def&sortmode=ASC&page=$2"
     }
 
 ######### 0. Create directories, log stuff
