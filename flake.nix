@@ -11,7 +11,7 @@
     {
       packages.${system}.default = pkgs.writeShellApplication {
         name = "libgen_dl";
-        runtimeInputs = with pkgs; [ bash aria ];
+        runtimeInputs = with pkgs; [ bash aria2 ];
         text = builtins.readFile ./libgen_dl.sh;
         bashOptions = [ ];
         checkPhase = "";
